@@ -5,7 +5,32 @@
 [![Tailscale](https://img.shields.io/badge/tailscale-%23245DC1.svg?style=for-the-badge&logo=tailscale&logoColor=white)](https://tailscale.com)
 [![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com)
 
-Demonstrate secure, frictionless access to AWS resources using Infrastructure as Code and modern VPN technology.
+Demonstrate secure, frictionless deployment and access to AWS resources using Infrastructure as Code and a modern zero-configuration VPN.
+
+---
+
+## ⚡ QuickStart
+
+```bash
+# Prerequisites: AWS credentials, Tailscale account, and Terraform installed
+git clone https://github.com/esoteric-git/ts-demo-1.git && cd ts-demo-1
+
+# Create auth key at https://login.tailscale.com/admin/settings/keys
+echo 'export TF_VAR_tailscale_auth_key="tskey-auth-xxxxx"' > .env
+echo 'export AWS_ACCESS_KEY_ID="your-aws-access-key"' >> .env
+echo 'export AWS_SECRET_ACCESS_KEY="your-aws-secret-key"' >> .env
+source .env
+
+# Deploy
+terraform init && terraform apply -auto-approve
+
+# Access (after Tailscale machines show connected)
+ssh ts-demo-vm1
+curl http://ts-demo-django:8000
+ping $(terraform output -raw vm2_private_ip)
+```
+
+For detailed setup and configuration, see [Setup Guide](#%EF%B8%8F-setup-guide).
 
 ---
 
