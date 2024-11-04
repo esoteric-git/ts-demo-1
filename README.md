@@ -101,4 +101,4 @@
 
 - You can browse directly to the Django app using its tailnet name (http://ts-demo-django:8000) despite the VPC security groups having no inbound rules, because its on the same tailnet.
 
-- If you disconnectyour local Tailscale client, you will not be able to access any of the AWS instances, thus demonstrating the remote access functionality.
+- If you disconnect your local Tailscale client, you will not be able to access any of the AWS instances, thus demonstrating the reliance on the remote access functionality.
