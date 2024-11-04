@@ -24,10 +24,10 @@ source .env
 # Deploy
 terraform init && terraform apply -auto-approve
 
-# Access (after Tailscale machines show connected)
-ssh ts-demo-vm1
-curl http://ts-demo-django:8000
-ping $(terraform output -raw vm2_private_ip)
+# Access (after Tailscale machines show connected and subnet is enabled)
+ssh ec2-user@ts-demo-vm1 # Public subnet router
+curl http://ts-demo-django:8000 # Public Django app
+ping ts-demo-vm2 # Isolated VM in private subnet
 ```
 
 For detailed setup and configuration, see [Setup Guide](#%EF%B8%8F-setup-guide).
@@ -170,7 +170,7 @@ The combination demonstrates how developers can quickly deploy cloud infrastruct
 
 - If you disconnect your local Tailscale client, you will not be able to access any of the AWS instances, thus demonstrating the reliance on the remote access functionality.
 
-## Documentation Links
+## 📚 Documentation Links
 - [Terraform Documentation](https://developer.hashicorp.com/terraform/docs)
 - [Tailscale Documentation](https://tailscale.com/kb/)
 - [Django Documentation](https://docs.djangoproject.com/en/stable/)
