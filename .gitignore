@@ -1,0 +1,15 @@
+venv/
+metacoder
+.cursorignore
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Environment variables
+.env
+
+# OS files
+.DS_Store
