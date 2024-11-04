@@ -1,6 +1,7 @@
 venv/
 metacoder
 .cursorignore
+django-app/
 
 # Terraform
 .terraform/

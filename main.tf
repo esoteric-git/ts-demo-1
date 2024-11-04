@@ -117,6 +117,20 @@ resource "aws_security_group" "vm2" {
   }
 }
 
+resource "aws_security_group" "django" {
+  name        = "ts-demo-django"
+  description = "Security group for Django application"
+  vpc_id      = aws_vpc.main.id
+
+  # Allow outbound traffic (needed for Tailscale and package installation)
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 # EC2 Instances
 resource "aws_instance" "vm1" {
   ami           = var.ami_id
@@ -150,5 +164,87 @@ resource "aws_instance" "vm2" {
 
   tags = {
     Name = "ts-demo-vm2"
+  }
+}
+
+resource "aws_instance" "django" {
+  ami           = "ami-06b21ccaeff8cd686"  # Amazon Linux 2023
+  instance_type = var.instance_type
+  subnet_id     = aws_subnet.public.id
+
+  vpc_security_group_ids = [aws_security_group.django.id]
+
+  user_data = <<-EOF
+              #!/bin/bash
+              
+              # Setup logging
+              exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
+              
+              echo "Starting user data script execution..."
+
+              # Install and configure Tailscale
+              echo "Installing Tailscale..."
+              curl -fsSL https://tailscale.com/install.sh | sudo sh
+              sudo tailscale up --authkey=${var.tailscale_auth_key} --hostname="ts-demo-django" --ssh
+
+              # Update system and install dependencies
+              echo "Updating system and installing dependencies..."
+              sudo dnf update -y
+              sudo dnf groupinstall -y "Development Tools"
+              sudo dnf install -y python3 python3-pip python3-devel nginx git
+
+              # Clone repository
+              echo "Cloning repository..."
+              sudo git clone https://github.com/esoteric-git/django-app.git /app || {
+                echo "Git clone failed!"
+                exit 1
+              }
+              
+              cd /app || {
+                echo "Failed to change to /app directory!"
+                exit 1
+              }
+
+              # Install dependencies globally
+              echo "Installing Python dependencies..."
+              sudo pip3 install --upgrade pip
+              sudo pip3 install -r requirements.txt
+
+              # Setup Django
+              echo "Setting up Django..."
+              sudo python3 manage.py makemigrations
+              sudo python3 manage.py migrate
+              sudo python3 manage.py populate_mock_data
+
+              # Create systemd service
+              sudo tee /etc/systemd/system/django.service <<'SERVICE'
+              [Unit]
+              Description=Django Ocean Analytics
+              After=network.target
+
+              [Service]
+              User=ec2-user
+              Group=ec2-user
+              WorkingDirectory=/app
+              ExecStart=/usr/local/bin/gunicorn --workers 3 --bind 0.0.0.0:8000 ocean_analytics.wsgi:application
+              Restart=always
+
+              [Install]
+              WantedBy=multi-user.target
+              SERVICE
+
+              # Set correct permissions
+              sudo chown -R ec2-user:ec2-user /app
+
+              # Start Django service
+              sudo systemctl daemon-reload
+              sudo systemctl enable django
+              sudo systemctl start django
+              
+              echo "User data script completed."
+              EOF
+
+  tags = {
+    Name = "ts-demo-django"
   }
 } 
