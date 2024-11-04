@@ -85,14 +85,6 @@ resource "aws_security_group" "vm1" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
-  # Allow inbound SSH (optional, for troubleshooting)
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 }
 
 resource "aws_security_group" "vm2" {

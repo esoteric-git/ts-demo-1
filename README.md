@@ -1,7 +1,15 @@
-# Demo - Django Developer with Zero-Config VPN Access to AWS
+# Secure AWS Development Environment: Terraform + Tailscale Demo
 
-## Project Objective
-### Demonstrating Modern Developer Workflows
+[![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)](https://www.terraform.io)
+[![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)](https://aws.amazon.com)
+[![Tailscale](https://img.shields.io/badge/tailscale-%23245DC1.svg?style=for-the-badge&logo=tailscale&logoColor=white)](https://tailscale.com)
+[![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com)
+
+Demonstrate secure, frictionless access to AWS resources using Infrastructure as Code and modern VPN technology.
+
+---
+
+## 🎯 Project Objective
 
 This project showcases two powerful tools that streamline cloud development and access:
 
@@ -12,24 +20,35 @@ This project showcases two powerful tools that streamline cloud development and 
 
 2. **Automated Setup of Secure Remote Access with Tailscale**
    - Zero-configuration VPN (Tailnet) for secure remote access
-   - Subnet routing to connect VPC resources to your Tailnet
+   - Subnet routing to connect isolated VPC resources to your Tailnet
    - Keyless SSH access to instances
 
 The combination demonstrates how developers can quickly deploy cloud infrastructure and securely access it without complex VPN setups or SSH key management.
 
-## Project Architecture
-<img src="./images/architecture.png" width="90%" alt="Project Architecture">
+---
 
-## Project Components
+## 🏗️ Architecture
+<p align="center">
+  <img src="./images/architecture.png" width="90%" alt="Project Architecture">
+</p>
+
+---
+
+## 🔍 Project Components
+
+<details open>
+<summary>Infrastructure Overview</summary>
 
 - Tailnet
 - VPC with public subnet (10.0.1.0/24) and private subnet (10.0.2.0/24)
-- EC2 instances
-  - vm1 in public subnet with Tailscale client and configured as a subnet router
-  - django vm in public subnet with Tailscale client
-  - vm2 in private subnet, no Tailscale client, reachable via vm1 subnet router
+- EC2 instances:
+  - vm1: Public subnet, Tailscale subnet router
+  - django: Public subnet, Tailscale client
+  - vm2: Private subnet, accessed via subnet router
+</details>
 
-### AWS VPC Security
+<details open>
+<summary>Security Configuration</summary>
 
 - The VPC demonstrates common security constraints developers encounter in enterprise AWS environments:
   - Private subnets with no direct internet access
@@ -39,24 +58,27 @@ The combination demonstrates how developers can quickly deploy cloud infrastruct
 - The private subnet 10.0.2.0/24 has no direct internet connectivity (no NAT gateway) and can only communicate externally through the subnet router (vm1)
 
 - The public subnet 10.0.1.0/24 has no inbound traffic allowed and unrestricted outbound traffic through the Internet Gateway, so it can reach the Tailscale network
+</details>
 
-### Django Application
+<details open>
+<summary>Application Details</summary>
 
-- A Django application is included in this demo to demonstrate a real-world use case where a developer could easily setup remote access to write code and test applications running in a typical VPC setup without the usual hassles.
+- A Django Web Application is included in this demo to demonstrate a real-world use case where a developer could easily setup remote access to write code and test applications running in a typical VPC setup without the usual hassles.
 
 - Terraform is showcased as a way to automate the entire deployment and startup of the demo Django application located at: https://github.com/esoteric-git/django-app.git by cloning it into the EC2 instance and running the commands to install dependencies, seed the database, and run the application.
 
 - The Django application is configured to run on port 8000 and will be accessible through the tailnet name (http://ts-demo-django:8000)
+</details>
 
-## Prerequisites
+---
 
-### Required Software On Your Local Machine
+## ⚙️ Setup Guide
+
+### Prerequisites
 
 - Terraform installed 
 - Tailscale client installed and connected to your Tailnet
 - Git for cloning this repository
-
-### Required Accounts
 
 - AWS Account with permissions to create:
   - VPC and associated networking resources
@@ -65,7 +87,7 @@ The combination demonstrates how developers can quickly deploy cloud infrastruct
 
 - Tailscale Account
 
-## Setup Project And Deploy Infrastructure
+### Deployment Steps
 
 1. **Clone the Repository**
    ```bash
@@ -93,7 +115,9 @@ The combination demonstrates how developers can quickly deploy cloud infrastruct
    terraform apply
    ```
 
-## Developer Workflow
+---
+
+## 👩‍💻 Developer Workflow
 
 ### Confirming Terraform Deployment
 
@@ -120,3 +144,14 @@ The combination demonstrates how developers can quickly deploy cloud infrastruct
 - You can browse directly to the Django app using its tailnet name (http://ts-demo-django:8000) despite the VPC security groups having no inbound rules, because its on the same tailnet.
 
 - If you disconnect your local Tailscale client, you will not be able to access any of the AWS instances, thus demonstrating the reliance on the remote access functionality.
+
+## Documentation Links
+- [Terraform Documentation](https://developer.hashicorp.com/terraform/docs)
+- [Tailscale Documentation](https://tailscale.com/kb/)
+- [Django Documentation](https://docs.djangoproject.com/en/stable/)
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
