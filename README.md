@@ -1,39 +1,53 @@
-# Django Developer Demo - Zero-Config VPN with IaC in AWS
-
-This project demonstrates:
-- Infrastructure as Code using Terraform to rapidly deploy
-- A Django application with multiple EC2 instances within a VPC in AWS
-- Enable seamless developer access to the application using Tailscale's zero-config VPN (tailnet), subnet router, and SSH
+# Demo - Django Developer with Zero-Config VPN Access to AWS
 
 ## Project Objective
+### Demonstrate The Following Developer Use Case:
 
-Showcase Terraform's ability to rapidly deploy AWS infrastructure and Tailscale's ability to enable secure connectivity to a private, isolated instance within a VPC. The demo uses Tailscale to access a non-Tailscale device in AWS through a subnet router, with minimal AWS network configuration.
+- Infrastructure as Code using Terraform to rapidly deploy a Django application with multiple EC2 instances within a new VPC in AWS. 
+
+- Automated Tailscale configuration to enable seamless developer access to the application despite restrictive VPC settings by using 3 Tailscale features:
+  - Tailnet (zero-config VPN for remote access)
+  - Subnet router (routes traffic between non-tailscale devices in the VPC and the tailnet)
+  - SSH (easy SSH access without managing keys)
+
+
+## Project Architecture
+![Project Architecture](./images/architecture.png)
+
+### AWS VPC Notes
+
+- The private subnet has no direct internet connectivity (no NAT gateway) and can only communicate externally through the subnet router (vm1)
+
+- The public subnet has no inbound traffic allowed and unrestricted outbound traffic through the Internet Gateway, so it can reach the Tailscale network
 
 ## Prerequisites
 
-### Required Software
-- Terraform installed on your laptop
+### Required Software On Your Local Machine
+
+- Terraform installed 
 - Tailscale client installed and connected to your Tailnet
 - Git for cloning this repository
 
 ### Required Accounts
+
 - AWS Account with permissions to create:
   - VPC and associated networking resources
   - EC2 instances
   - Security Groups
+
 - Tailscale Account
 
-## Quick Start
+## Setup Project And Deploy Infrastructure
 
 1. **Clone the Repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/esoteric-git/ts-demo-1.git
    cd ts-demo-1
    ```
 
 2. **Create Environment File**
    
-   Create a `.env` file in the project root with your credentials:
+   Copy the `.env.example` file to `.env` and populate with your credentials:
    ```bash
    AWS_ACCESS_KEY_ID="your-aws-access-key"
    AWS_SECRET_ACCESS_KEY="your-aws-secret-key"
@@ -51,9 +65,27 @@ Showcase Terraform's ability to rapidly deploy AWS infrastructure and Tailscale'
    terraform apply
    ```
 
-## Flow
+## Developer Workflow
 
-### 1. Access
-- After deployment, you can ping vm-2 (private instance) even though its completely isolated within the VPC, the ping is routed through vm-1 (subnet router)
-- You can SSH directly into vm-1 without ssh keys (tailscale ssh)
-- You can access the Django app directly through the tailnet even though the VPC allows no inbound traffic to the instances
+### Confirming Terraform Deployment
+
+- Note the outputs from the terraform deployment in the terminal:
+  - vm1_public_ip
+  - vm2_private_ip
+  - django_vm_public_ip
+
+- Confirm the VPC, Subnet, and EC2 instances were created in the AWS Console
+
+- Confirm vm1 and django-vm are visible in Tailscale > Machines
+
+- Click on vm1 and confirm the subnet router is enabled
+
+### Testing Remote Access From Local Machine
+
+- After confirming the deployment, you can ping vm-2's private IP (instance in the private subnet) despite vm-2 having no direct internet connectivity. The ping is routed through vm-1 which is acting as a Tailscale subnet router.
+
+- You can SSH into vm-1 and the django instance with no need for traditional SSH keys or open ports because Tailscale SSH is enabled on the instances.
+
+- You can browse directly to the Django app using its tailnet name (http://ts-demo-django:8000) despite the VPC security groups having no inbound rules, because its on the same tailnet.
+
+- If you disconnectyour local Tailscale client, you will not be able to access any of the AWS instances, thus demonstrating the remote access functionality.
