@@ -14,11 +14,24 @@
 ## Project Architecture
 ![Project Architecture](./images/architecture.png)
 
-### AWS VPC Notes
+### AWS VPC Security
+
+- The VPC demonstrates common security constraints developers encounter in enterprise AWS environments:
+  - Private subnets with no direct internet access
+  - Restricted or no inbound traffic allowed to application servers
+  - Need to access development/test environments through bastion hosts or VPNs
 
 - The private subnet has no direct internet connectivity (no NAT gateway) and can only communicate externally through the subnet router (vm1)
 
 - The public subnet has no inbound traffic allowed and unrestricted outbound traffic through the Internet Gateway, so it can reach the Tailscale network
+
+### Django Application
+
+- A Django application is included in this demo to demonstrate a real-world use case where a developer could easily setup remote access to write code and test applications running in a typical VPC setup without the usual hassles.
+
+- Terraform is showcased as a way to automate the entire deployment and startup of the demo Django application located at: https://github.com/esoteric-git/django-app.git by cloning it into the EC2 instance and running the commands to install dependencies, seed the database, and run the application.
+
+- The Django application is configured to run on port 8000 and will be accessible through the tailnet name (http://ts-demo-django:8000)
 
 ## Prerequisites
 
