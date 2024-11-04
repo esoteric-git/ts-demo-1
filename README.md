@@ -1,10 +1,13 @@
-# Tailscale Demo - Zero-Config VPN with AWS
+# Django Developer Demo - Zero-Config VPN with IaC in AWS
 
-This project demonstrates Tailscale's zero-config VPN capabilities by showing how to securely access a private AWS instance without complex networking configurations.
+This project demonstrates:
+- Infrastructure as Code using Terraform to rapidly deploy
+- A Django application with multiple EC2 instances within a VPC in AWS
+- Enable seamless developer access to the application using Tailscale's zero-config VPN (tailnet), subnet router, and SSH
 
 ## Project Objective
 
-Showcase Tailscale's ability to enable secure connectivity to a private, isolated instance within a VPC. The demo uses Tailscale to access a non-Tailscale device in AWS through a subnet router, with minimal AWS network configuration.
+Showcase Terraform's ability to rapidly deploy AWS infrastructure and Tailscale's ability to enable secure connectivity to a private, isolated instance within a VPC. The demo uses Tailscale to access a non-Tailscale device in AWS through a subnet router, with minimal AWS network configuration.
 
 ## Prerequisites
 
@@ -48,7 +51,9 @@ Showcase Tailscale's ability to enable secure connectivity to a private, isolate
    terraform apply
    ```
 
-## Demo Flow
+## Flow
 
-### 1. Initial Access
-After deployment, you can SSH into vm-2 (private instance) through vm-1 (subnet router): 
+### 1. Access
+- After deployment, you can ping vm-2 (private instance) even though its completely isolated within the VPC, the ping is routed through vm-1 (subnet router)
+- You can SSH directly into vm-1 without ssh keys (tailscale ssh)
+- You can access the Django app directly through the tailnet even though the VPC allows no inbound traffic to the instances
