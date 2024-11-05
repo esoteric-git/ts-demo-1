@@ -183,7 +183,51 @@ The combination demonstrates how developers can quickly deploy cloud infrastruct
 
 - If you disconnect your local Tailscale client, you will not be able to access any of the AWS instances, thus demonstrating the reliance on the remote access functionality.
 
-- To clean up the demo infrastructure, run `terraform destroy` and disconnect your local Tailscale client.
+
+
+### Automated Tests to Validate Deployment
+
+Alternatively, you can run the included integration tests to verify that all components are working correctly:
+
+```bash
+# Install test dependencies
+pip install requests
+
+# Run the tests
+python test_deployment.py
+```
+
+The tests verify:
+- SSH access to VM1 and Django VM
+- Ping connectivity to the private VM2
+- Django app accessibility
+
+If the tests are successful your terminal should look like this:
+
+```bash
+test_01_vm1_ssh_access (__main__.DeploymentTest.test_01_vm1_ssh_access)
+Test SSH access to VM1 ... ok
+test_02_django_ssh_access (__main__.DeploymentTest.test_02_django_ssh_access)
+Test SSH access to Django VM ... ok
+test_03_private_vm_ping (__main__.DeploymentTest.test_03_private_vm_ping)
+Test ping to private VM2 through subnet router ... ok
+test_04_django_app_access (__main__.DeploymentTest.test_04_django_app_access)
+Test access to Django application ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 5.042s
+
+OK
+```
+
+## Project Cleanup
+
+To clean up the demo infrastructure:
+- Run `terraform destroy` to delete all resources we created on AWS. 
+- Review the resources listed and confirm they are correct.
+- Type `yes` to delete the resources.
+- If you are done testing Tailscale you may disconnect your local Tailscale client.
+
 
 ## 📚 Documentation Links
 - [Terraform Documentation](https://developer.hashicorp.com/terraform/docs)
