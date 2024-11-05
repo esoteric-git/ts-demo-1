@@ -183,6 +183,8 @@ The combination demonstrates how developers can quickly deploy cloud infrastruct
 
 - If you disconnect your local Tailscale client, you will not be able to access any of the AWS instances, thus demonstrating the reliance on the remote access functionality.
 
+- To clean up the demo infrastructure, run `terraform destroy` and disconnect your local Tailscale client.
+
 ## 📚 Documentation Links
 - [Terraform Documentation](https://developer.hashicorp.com/terraform/docs)
 - [Tailscale Documentation](https://tailscale.com/kb/)
