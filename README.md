@@ -185,9 +185,9 @@ The combination demonstrates how developers can quickly deploy cloud infrastruct
 
 
 
-### Automated Tests to Validate Deployment
+## ✅ Automated Tests to Validate Deployment
 
-Alternatively, you can run the included integration tests to verify that all components are working correctly:
+Alternatively, if you have python installed you can run the included integration tests to verify that all components are working correctly:
 
 ```bash
 # Install test dependencies
@@ -220,13 +220,19 @@ Ran 4 tests in 5.042s
 OK
 ```
 
-## Project Cleanup
+## 🧹 Project Cleanup
 
 To clean up the demo infrastructure:
 - Run `terraform destroy` to delete all resources we created on AWS. 
 - Review the resources listed and confirm they are correct.
 - Type `yes` to delete the resources.
 - If you are done testing Tailscale you may disconnect your local Tailscale client.
+
+## 🎉 Thank You!
+
+Thanks for reviewing this demo project! I hope it clearly demonstrated the power of Terraform to automate the deployment of AWS resources and Tailscale to provide secure, automated remote access to those resources. 
+
+If you have any questions or feedback, please don't hesitate to reach out.
 
 
 ## 📚 Documentation Links
