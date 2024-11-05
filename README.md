@@ -27,7 +27,7 @@ terraform init && terraform apply -auto-approve
 # Access (after Tailscale machines show connected and subnet is enabled)
 ssh ec2-user@ts-demo-vm1 # Public subnet router
 curl http://ts-demo-django:8000 # Public Django app
-ping ts-demo-vm2 # Isolated VM in private subnet
+ping $(terraform output -raw vm2_private_ip) # Isolated VM in private subnet
 ```
 
 For detailed setup and configuration, see [Setup Guide](#%EF%B8%8F-setup-guide).
@@ -162,11 +162,24 @@ The combination demonstrates how developers can quickly deploy cloud infrastruct
 
 ### Testing Remote Access From Local Machine
 
-- After confirming the deployment, you can ping vm-2's private IP (instance in the private subnet) despite vm-2 having no direct internet connectivity. The ping is routed through vm-1 which is acting as a Tailscale subnet router.
+- After confirming the deployment, you can ping vm2's private IP (instance in the private subnet) despite vm2 having no direct internet connectivity. The ping is routed through vm1 which is acting as a Tailscale subnet router. Note that you can't ping vm2 by name because its not on the Tailnet.
 
-- You can SSH into vm-1 and the django instance with no need for traditional SSH keys or open ports because Tailscale SSH is enabled on the instances.
+    ```bash
+    ping $(terraform output -raw vm2_private_ip)
+    ```
+
+- You can SSH into vm1 and the django instances by name or IP address with no need for traditional SSH keys or open ports because Tailscale SSH is enabled on the instances.
+
+    ```bash
+    ssh ec2-user@ts-demo-vm1
+    ssh ec2-user@ts-demo-django
+    ```
 
 - You can browse directly to the Django app using its tailnet name (http://ts-demo-django:8000) despite the VPC security groups having no inbound rules, because its on the same tailnet.
+
+    ```bash
+    curl http://ts-demo-django:8000 
+    ```
 
 - If you disconnect your local Tailscale client, you will not be able to access any of the AWS instances, thus demonstrating the reliance on the remote access functionality.
 
