@@ -90,7 +90,7 @@ The combination demonstrates how developers can quickly deploy cloud infrastruct
 
 - A Django Web Application is included in this demo to demonstrate a real-world use case where a developer could easily setup remote access to write code and test applications running in a typical VPC setup without the usual hassles.
 
-- Terraform is showcased as a way to automate the entire deployment and startup of the demo Django application located at: https://github.com/esoteric-git/django-app.git by cloning it into the EC2 instance and running the commands to install dependencies, seed the database, and run the application.
+- Terraform is showcased as a way to automate the entire deployment and startup of the demo Django application located at: https://github.com/esoteric-git/django-app-ts.git by cloning it into the EC2 instance and running the commands to install dependencies, seed the database, and run the application.
 
 - The Django application is configured to run on port 8000 and will be accessible through the tailnet name (http://ts-demo-django:8000)
 </details>
@@ -245,3 +245,9 @@ If you have any questions or feedback, please don't hesitate to reach out.
 ## 📝 License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+
+
+
+Visitor Count: 1730961641

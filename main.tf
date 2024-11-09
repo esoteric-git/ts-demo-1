@@ -187,7 +187,7 @@ resource "aws_instance" "django" {
 
               # Clone repository
               echo "Cloning repository..."
-              sudo git clone https://github.com/esoteric-git/django-app.git /app || {
+              sudo git clone https://github.com/esoteric-git/django-app-ts.git /app || {
                 echo "Git clone failed!"
                 exit 1
               }
